@@ -110,3 +110,46 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # TELEGRAM SETTINGS
 TELEGRAM_TOKEN = ENV.TELEGRAM.TOKEN
 BOT_ADMIN_IDS = ENV.TELEGRAM.BOT_ADMINS
+
+# LOGGING SETTINGS
+ERROR_LOG_FILENAME = os.path.join(BASE_DIR, "logs/error.log")
+os.makedirs(os.path.dirname(ERROR_LOG_FILENAME), exist_ok=True)
+LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "%(asctime)s:c:%(process)d:%(lineno)d "
+            "%(levelname)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "simple": {
+            "format": "%(filename)s:%(lineno)d: - %(message)s",
+        },
+    },
+    "handlers": {
+        "logfile": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "ERROR",
+            "filename": ERROR_LOG_FILENAME,
+            "formatter": "default",
+            "backupCount": 2,
+        },
+        "verbose_output": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "stream": "ext://sys.stdout",
+        },
+    },
+    "loggers": {
+        ENV.PROJECT_NAME: {
+            "level": "INFO",
+            "handlers": [
+                "verbose_output",
+            ],
+            "propagate": False,
+        },
+    },
+    "root": {"level": "DEBUG", "handlers": ["logfile", "verbose_output"]},
+}

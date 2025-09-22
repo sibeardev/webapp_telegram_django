@@ -37,6 +37,7 @@ class EnvSettings(BaseSettings):
     EXTERNAL_URL: AnyHttpUrl
     PORT: int = 8000
     DEBUG: bool = True
+    PROJECT_NAME: str = "mimir"
 
     model_config = SettingsConfigDict(
         env_file=".env",
