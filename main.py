@@ -9,7 +9,7 @@ from django.urls import reverse
 from telegram import Update
 from telegram.error import NetworkError, TelegramError
 
-from bot.dispatcher import TELEGRAM_BOT
+from bot.dispatcher import TELEGRAM_BOT, setup_handlers
 
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
@@ -26,6 +26,7 @@ async def main() -> None:
         )
     )
 
+    setup_handlers(TELEGRAM_BOT)
     await TELEGRAM_BOT.bot.delete_webhook(drop_pending_updates=True)
     await TELEGRAM_BOT.bot.set_webhook(
         url=urljoin(settings.EXTERNAL_URL, reverse("bot:telegram_webhook")),

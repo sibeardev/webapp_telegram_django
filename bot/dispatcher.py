@@ -3,8 +3,6 @@ import logging
 from django.conf import settings
 from telegram.ext import Application
 
-from .handlers import start
-
 logger = logging.getLogger(__name__)
 
 TELEGRAM_BOT = (
@@ -15,4 +13,8 @@ TELEGRAM_BOT = (
     .build()
 )
 
-TELEGRAM_BOT.add_handlers(handlers=[*start.handlers])
+
+def setup_handlers(application: Application):
+    from bot.handlers import start
+
+    application.add_handlers(handlers=[*start.handlers])
