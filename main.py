@@ -5,6 +5,7 @@ import uvicorn
 from django.conf import settings
 from django.core.asgi import get_asgi_application
 from telegram import Update
+from telegram.error import NetworkError, TelegramError
 
 from bot.dispatcher import TELEGRAM_BOT
 
@@ -31,13 +32,22 @@ async def main() -> None:
     )
 
     async with TELEGRAM_BOT:
-        logger.info(await TELEGRAM_BOT.bot.get_me())
-        logger.info(await TELEGRAM_BOT.bot.get_webhook_info())
         try:
+            logger.info(await TELEGRAM_BOT.bot.get_me())
+            logger.info(await TELEGRAM_BOT.bot.get_webhook_info())
             await TELEGRAM_BOT.start()
             await server.serve()
+        except (NetworkError, TelegramError) as error:
+            logger.error("Telegram API error: %s", error, exc_info=True)
+        except OSError as error:
+            logger.error("Server error (port or config issue): %s", error, exc_info=True)
+        except asyncio.CancelledError:
+            logger.info("Asyncio task cancelled, shutting down gracefully.")
+            raise
+        except KeyboardInterrupt:
+            logger.info("Server stopped manually.")
         except Exception as error:
-            logger.error("An error occurred: %s", error)
+            logger.error("Unexpected error: %s", error, exc_info=True)
         finally:
             await TELEGRAM_BOT.stop()
 
