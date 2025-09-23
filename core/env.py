@@ -6,13 +6,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class TelegramSettings(BaseModel):
     TOKEN: str
-    BOT_ADMINS: list[int]
+    ADMINS: list[int]
+    SECRET: str
 
 
-class DatabaseSettings(BaseModel):
+class PostgresSettings(BaseModel):
     USER: str
     PASSWORD: str
-    NAME: str
+    DB: str
     HOST: str = "db"
     PORT: int = 5432
     URL: str | None = None
@@ -20,7 +21,7 @@ class DatabaseSettings(BaseModel):
     @model_validator(mode="after")
     def assemble_url(cls, model):
         if not model.URL:
-            model.URL = f"postgresql://{model.USER}:{model.PASSWORD}@{model.HOST}:{model.PORT}/{model.NAME}"
+            model.URL = f"postgresql://{model.USER}:{model.PASSWORD}@{model.HOST}:{model.PORT}/{model.DB}"
         return model
 
 
@@ -32,7 +33,7 @@ class DjangoSettings(BaseModel):
 
 class EnvSettings(BaseSettings):
     DJANGO: DjangoSettings
-    DB: DatabaseSettings
+    POSTGRES: PostgresSettings
     TELEGRAM: TelegramSettings
     EXTERNAL_URL: AnyHttpUrl
     PORT: int = 8000

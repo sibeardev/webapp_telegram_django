@@ -1,4 +1,6 @@
+import logging.config
 import os
+from urllib.parse import urlparse
 
 import dj_database_url
 
@@ -11,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = ENV.DJANGO.SECRET_KEY
 DEBUG = ENV.DEBUG
-EXTERNAL_URL = ENV.EXTERNAL_URL
+EXTERNAL_URL = str(ENV.EXTERNAL_URL)
 PORT = ENV.PORT
 
 
@@ -19,7 +21,7 @@ CSRF_TRUSTED_ORIGINS = ENV.DJANGO.CSRF_TRUSTED_ORIGINS or (
     [EXTERNAL_URL] if EXTERNAL_URL else []
 )
 
-ALLOWED_HOSTS = ENV.DJANGO.ALLOWED_HOSTS
+ALLOWED_HOSTS = ENV.DJANGO.ALLOWED_HOSTS + [urlparse(EXTERNAL_URL).hostname]
 
 
 INSTALLED_APPS = [
@@ -29,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "bot.apps.BotConfig",
 ]
 
 MIDDLEWARE = [
@@ -63,7 +66,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 # Database
 DATABASES = {
-    "default": dj_database_url.parse(ENV.DB.URL, conn_max_age=600)  # type: ignore
+    "default": dj_database_url.parse(ENV.POSTGRES.URL, conn_max_age=600)  # type: ignore
 }
 
 
@@ -109,23 +112,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # TELEGRAM SETTINGS
 TELEGRAM_TOKEN = ENV.TELEGRAM.TOKEN
-BOT_ADMIN_IDS = ENV.TELEGRAM.BOT_ADMINS
+BOT_ADMIN_IDS = ENV.TELEGRAM.ADMINS
+TELEGRAM_SECRET = ENV.TELEGRAM.SECRET
 
 # LOGGING SETTINGS
 ERROR_LOG_FILENAME = os.path.join(BASE_DIR, "logs/error.log")
 os.makedirs(os.path.dirname(ERROR_LOG_FILENAME), exist_ok=True)
-LOGGING_CONFIG = {
+LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "default": {
-            "format": "%(asctime)s:c:%(process)d:%(lineno)d "
-            "%(levelname)s %(message)s",
+            "format": "%(asctime)s:%(levelname)s:%(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
-        "simple": {
-            "format": "%(filename)s:%(lineno)d: - %(message)s",
-        },
+        "simple": {"format": "%(filename)s:%(lineno)d: - %(message)s"},
     },
     "handlers": {
         "logfile": {
@@ -135,7 +136,7 @@ LOGGING_CONFIG = {
             "formatter": "default",
             "backupCount": 2,
         },
-        "verbose_output": {
+        "console": {
             "class": "logging.StreamHandler",
             "level": "DEBUG",
             "formatter": "simple",
@@ -145,11 +146,11 @@ LOGGING_CONFIG = {
     "loggers": {
         ENV.PROJECT_NAME: {
             "level": "INFO",
-            "handlers": [
-                "verbose_output",
-            ],
+            "handlers": ["console"],
             "propagate": False,
         },
     },
-    "root": {"level": "DEBUG", "handlers": ["logfile", "verbose_output"]},
+    "root": {"level": "INFO", "handlers": ["logfile", "console"]},
 }
+
+logging.config.dictConfig(LOGGING)
