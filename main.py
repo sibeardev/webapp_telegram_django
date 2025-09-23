@@ -1,9 +1,11 @@
 import asyncio
 import logging
+from urllib.parse import urljoin
 
 import uvicorn
 from django.conf import settings
 from django.core.asgi import get_asgi_application
+from django.urls import reverse
 from telegram import Update
 from telegram.error import NetworkError, TelegramError
 
@@ -26,7 +28,7 @@ async def main() -> None:
 
     await TELEGRAM_BOT.bot.delete_webhook(drop_pending_updates=True)
     await TELEGRAM_BOT.bot.set_webhook(
-        url=f"{settings.EXTERNAL_URL}bot/update/",
+        url=urljoin(settings.EXTERNAL_URL, reverse("bot:telegram_webhook")),
         allowed_updates=Update.ALL_TYPES,
         secret_token=settings.TELEGRAM_SECRET,
     )
