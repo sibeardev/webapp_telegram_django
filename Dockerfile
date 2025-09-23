@@ -2,20 +2,21 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev curl \
-    && rm -rf /var/lib/apt/lists/*
+# Установим poetry + плагин для export
+RUN pip install --no-cache-dir "poetry>=2.0.0" poetry-plugin-export
 
-COPY pyproject.toml poetry.lock* /app/
+# Копируем только файлы зависимостей (чтобы работало кэширование слоёв)
+COPY pyproject.toml poetry.lock ./
 
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
-    export PATH="$PATH:/root/.local/bin" && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-root --only main
+# Экспортируем зависимости и ставим через pip
+RUN poetry export -f requirements.txt --only main --without-hashes -o requirements.txt \
+    && pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && rm -rf /root/.cache/pip
 
-COPY . /app
+# Копируем код проекта
+COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["gunicorn", "core.asgi:application", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000"]
+CMD ["python", "main.py"]
