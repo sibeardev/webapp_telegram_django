@@ -154,3 +154,5 @@ LOGGING = {
 }
 
 logging.config.dictConfig(LOGGING)
+
+AUTH_USER_MODEL = "bot.User"
