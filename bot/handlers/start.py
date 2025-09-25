@@ -1,6 +1,9 @@
 import logging
+from urllib.parse import urljoin
 
-from telegram import Update
+from django.conf import settings
+from django.urls import reverse
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
 from telegram.constants import ParseMode
 from telegram.ext import CommandHandler, ContextTypes, filters
 
@@ -22,7 +25,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         text = "Error creating your user record."
 
-    await update.message.reply_text(text=text, parse_mode=ParseMode.HTML)
+    url = urljoin(settings.EXTERNAL_URL, reverse("bot:webapp"))
+    buttons = [[InlineKeyboardButton("🚀 run WebApp", web_app=WebAppInfo(url))]]
+
+    await update.message.reply_text(
+        text=text,
+        parse_mode=ParseMode.HTML,
+        reply_markup=InlineKeyboardMarkup(buttons),
+    )
 
 
 handlers = [CommandHandler("start", start, filters=filters.ChatType.PRIVATE)]

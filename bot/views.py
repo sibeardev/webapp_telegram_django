@@ -3,12 +3,17 @@ import json
 import logging
 import traceback
 
+from django.conf import settings
+from django.contrib.auth import login
 from django.http import HttpRequest, JsonResponse
+from django.shortcuts import render
 from django.views import View
 from telegram import Update
 from telegram.error import TelegramError
 
 from bot.dispatcher import TELEGRAM_BOT
+from bot.models import User
+from bot.utils import validate_telegram_init_data
 
 logger = logging.getLogger(__name__)
 
@@ -41,3 +46,37 @@ class TelegramBotWebhookView(View):
 
     async def get(self, request: HttpRequest, *args, **kwargs):
         return JsonResponse({"ok": "Get request processed. Nothing done"})
+
+
+class TelegramAuthView(View):
+    template_name = "index.html"
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        body = json.loads(request.body)
+        init_data = body.get("initData")
+        init_data_unsafe = body.get("initDataUnsafe")
+
+        if not init_data or not init_data_unsafe:
+            return JsonResponse({"ok": False, "error": "initData not found"}, status=400)
+
+        if not validate_telegram_init_data(init_data, settings.TELEGRAM_TOKEN):
+            return JsonResponse({"ok": False, "error": "Invalid init data"}, status=403)
+
+        user_data = init_data_unsafe.get("user")
+
+        user, _ = User.objects.get_or_create(
+            user_id=user_data["id"],
+            defaults={
+                "telegram_username": user_data.get("username"),
+                "telegram_first_name": user_data.get("first_name"),
+                "telegram_last_name": user_data.get("last_name"),
+                "username": user_data.get("username") or f"tg_{user_data['id']}",
+            },
+        )
+
+        login(request, user)
+
+        return JsonResponse({"ok": True, "user": user.username})
