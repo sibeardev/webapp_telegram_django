@@ -16,12 +16,10 @@ DEBUG = ENV.DEBUG
 EXTERNAL_URL = str(ENV.EXTERNAL_URL)
 PORT = ENV.PORT
 
+external_uri = urlparse(EXTERNAL_URL)
 
-CSRF_TRUSTED_ORIGINS = ENV.DJANGO.CSRF_TRUSTED_ORIGINS or (
-    [EXTERNAL_URL] if EXTERNAL_URL else []
-)
-
-ALLOWED_HOSTS = ENV.DJANGO.ALLOWED_HOSTS + [urlparse(EXTERNAL_URL).hostname]
+CSRF_TRUSTED_ORIGINS = [f"{external_uri.scheme}://{external_uri.hostname}"]
+ALLOWED_HOSTS = ENV.DJANGO.ALLOWED_HOSTS + [external_uri.hostname]
 
 
 INSTALLED_APPS = [
