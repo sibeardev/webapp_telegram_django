@@ -15,6 +15,7 @@ SECRET_KEY = ENV.DJANGO.SECRET_KEY
 DEBUG = ENV.DEBUG
 EXTERNAL_URL = str(ENV.EXTERNAL_URL)
 PORT = ENV.PORT
+PROJECT_NAME = ENV.PROJECT_NAME
 
 external_uri = urlparse(EXTERNAL_URL)
 
@@ -23,7 +24,9 @@ ALLOWED_HOSTS = ENV.DJANGO.ALLOWED_HOSTS + [external_uri.hostname]
 
 
 INSTALLED_APPS = [
+    "django_daisy",
     "django.contrib.admin",
+    "django.contrib.humanize",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -142,7 +145,7 @@ LOGGING = {
         },
     },
     "loggers": {
-        ENV.PROJECT_NAME: {
+        PROJECT_NAME: {
             "level": "INFO",
             "handlers": ["console"],
             "propagate": False,
@@ -154,3 +157,35 @@ LOGGING = {
 logging.config.dictConfig(LOGGING)
 
 AUTH_USER_MODEL = "bot.User"
+
+DAISY_SETTINGS = {
+    "SITE_TITLE": PROJECT_NAME,
+    "SITE_HEADER": PROJECT_NAME,
+    "INDEX_TITLE": "Hi, welcome to your dashboard",
+    "SITE_LOGO": "/static/admin/img/logo.png",
+    "EXTRA_STYLES": [],
+    "EXTRA_SCRIPTS": [],
+    "LOAD_FULL_STYLES": True,
+    "SHOW_CHANGELIST_FILTER": False,
+    "DONT_SUPPORT_ME": True,
+    "SIDEBAR_FOOTNOTE": "@sibeardev",
+    "DEFAULT_THEME": None,
+    "DEFAULT_THEME_DARK": None,
+    "SHOW_THEME_SELECTOR": True,
+    "THEME_LIST": [
+        {"name": "Light", "value": "light"},
+        {"name": "Dark", "value": "dark"},
+    ],
+    "APPS_REORDER": {
+        "auth": {
+            "icon": "fa-solid fa-person-military-pointing",
+            "name": "Authentication",
+            "hide": False,
+            "divider_title": None,
+        },
+        "bot": {
+            "icon": "fa-brands fa-telegram",
+            "name": "Telegram Users",
+        },
+    },
+}
