@@ -1,7 +1,10 @@
 import hashlib
 import hmac
 import logging
+import secrets
+import string
 from urllib.parse import parse_qsl
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,3 +25,8 @@ def validate_telegram_init_data(init_data: str, bot_token: str) -> bool:
     ).hexdigest()
 
     return hmac_hash == check_hash
+
+
+def generate_password(length: int = 12) -> str:
+    alphabet = string.ascii_letters + string.digits + "!@#$%^&*()"
+    return "".join(secrets.choice(alphabet) for _ in range(length))

@@ -66,16 +66,7 @@ class TelegramAuthView(View):
             return JsonResponse({"ok": False, "error": "Invalid init data"}, status=403)
 
         user_data = init_data_unsafe.get("user")
-
-        user, _ = User.objects.get_or_create(
-            user_id=user_data["id"],
-            defaults={
-                "telegram_username": user_data.get("username"),
-                "telegram_first_name": user_data.get("first_name"),
-                "telegram_last_name": user_data.get("last_name"),
-                "username": user_data.get("username") or f"tg_{user_data['id']}",
-            },
-        )
+        user, _ = User.update_or_create_from_telegram(user_data)
 
         login(request, user)
 

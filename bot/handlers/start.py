@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
-    user, created = await get_or_create_user(update.effective_user)
+    user, created = await get_or_create_user(update.effective_user.to_dict())  # type: ignore
 
     if user:
         text = (
@@ -28,7 +28,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     url = urljoin(settings.EXTERNAL_URL, reverse("bot:webapp"))
     buttons = [[InlineKeyboardButton("🚀 run WebApp", web_app=WebAppInfo(url))]]
 
-    await update.message.reply_text(
+    await update.message.reply_text(  # type: ignore
         text=text,
         parse_mode=ParseMode.HTML,
         reply_markup=InlineKeyboardMarkup(buttons),
