@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+
+# Virtualenv
+.venv/
+env/
+venv/
+
+# Poetry
+.cache/
+.mypy_cache/
+.pytest_cache/
+.dmypy.json
+poetry.toml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Django
+staticfiles/
+media/
