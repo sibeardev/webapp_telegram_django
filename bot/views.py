@@ -49,7 +49,7 @@ class TelegramBotWebhookView(View):
 
 
 class TelegramAuthView(View):
-    template_name = "index.html"
+    template_name = "auth.html"
 
     def get(self, request: HttpRequest, *args, **kwargs):
         return render(request, self.template_name)

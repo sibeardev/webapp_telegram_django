@@ -25,7 +25,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         text = "Error creating your user record."
 
-    url = urljoin(settings.EXTERNAL_URL, reverse("bot:webapp"))
+    url = urljoin(settings.EXTERNAL_URL, reverse("bot:auth"))
     buttons = [[InlineKeyboardButton("🚀 run WebApp", web_app=WebAppInfo(url))]]
 
     await update.message.reply_text(  # type: ignore

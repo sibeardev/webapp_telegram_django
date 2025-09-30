@@ -10,5 +10,5 @@ urlpatterns = [
         csrf_exempt(TelegramBotWebhookView.as_view()),
         name="telegram_webhook",
     ),
-    path("webapp/", TelegramAuthView.as_view(), name="webapp"),
+    path("auth/", TelegramAuthView.as_view(), name="auth"),
 ]

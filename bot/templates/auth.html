@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>My Profile</title>
+    <title>Authorization</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="{% static 'js/telegram_auth.js' %}"></script>
     <script>
@@ -14,17 +14,13 @@
 </head>
 
 <body>
-    <h1>Telegram WebApp Auth</h1>
-    <div id="content">Authorizing...</div>
-
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (!checkTelegramWebApp(tg)) {
-                document.getElementById("content").innerText =
-                    "This page works only in Telegram WebApp.";
+                alert("This page works only in Telegram WebApp.");
                 return;
             }
-            authWithTelegram("{% url 'bot:webapp' %}", tg, csrfToken);
+            authWithTelegram("{% url 'bot:auth' %}", tg, csrfToken);
             tg.ready();
             tg.expand();
         });

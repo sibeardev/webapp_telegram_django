@@ -28,13 +28,13 @@ async function authWithTelegram(url, tg, csrfToken) {
 
     let result = await response.json();
     if (result.ok) {
-      document.getElementById("content").innerText = `Welcome, ${result.user}`;
+      window.location.href = "/";
     } else {
-      document.getElementById(
-        "content"
-      ).innerText = `Auth failed: ${result.error}`;
+      tg.showAlert(`Authorization failed: ${result.error}`);
+      tg.close();
     }
   } catch (error) {
-    document.getElementById("content").innerText = "Authorization error.";
+    tg.showAlert(`Authorization error: ${error}`);
+    tg.close();
   }
 }
