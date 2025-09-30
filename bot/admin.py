@@ -25,6 +25,7 @@ class UserAdmin(admin.ModelAdmin):
         "date_joined",
         "last_login",
     ]
+    list_display_links = ["avatar", "username", "user_id", "first_name"]
     list_filter = ["is_premium", "language_code", "is_active"]
     search_fields = ("username", "user_id", "first_name", "last_name")
     readonly_fields = ("user_id",)
