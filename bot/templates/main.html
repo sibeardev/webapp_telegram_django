@@ -19,3 +19,14 @@
     </div>
 </div>
 {% endblock %}
+
+{% block script %}
+<script>
+    tg.MainButton.setText("Main button");
+    tg.MainButton.show();
+    tg.MainButton.onClick(() => {
+        alert("Main button clicked!");
+    });
+</script>
+{{ block.super }}
+{% endblock %}
