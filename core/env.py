@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class TelegramSettings(BaseModel):
     TOKEN: str
     ADMINS: list[int]
+    SECRET: str
 
 
 class PostgresSettings(BaseModel):
