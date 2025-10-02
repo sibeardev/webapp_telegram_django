@@ -11,16 +11,3 @@ function checkTelegramWebApp(tg) {
 
   return true;
 }
-
-function setTheme(tg) {
-  const htmlTag = document.documentElement;
-  if (!tg || !tg.colorScheme) return;
-
-  if (tg.colorScheme === "light") {
-    htmlTag.classList.remove("dark");
-    htmlTag.classList.add("light");
-  } else {
-    htmlTag.classList.remove("light");
-    htmlTag.classList.add("dark");
-  }
-}
