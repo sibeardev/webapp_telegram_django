@@ -21,7 +21,7 @@
 <body class="tg-bg tg-text font-sans">
   {% block header %}
   <div
-    class="flex items-center justify-between backdrop-blur-md px-6 py-3 tg-header-bg tg-text shadow-lg max-w-md mx-auto transition-all duration-300">
+    class="flex items-center justify-between backdrop-blur-md px-6 py-3 tg-header-bg tg-text shadow-lg max-w-md mx-auto transition-all duration-300 fixed top-0 left-0 right-0 z-50">
     <a href="{% url 'bot:main' %}" class="mx-2 transition-all duration-200 ease-in-out rounded-full p-1">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="size-6 tg-text mx-auto">
@@ -35,7 +35,7 @@
   </div>
   {% endblock %}
 
-  <main class="min-h-screen flex flex-col p-4">
+  <main class="min-h-screen flex flex-col pt-20 p-4">
     {% block content %}
     {% endblock %}
   </main>
