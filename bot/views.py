@@ -5,8 +5,10 @@ import traceback
 
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import View
 from telegram import Update
 from telegram.error import TelegramError
@@ -71,3 +73,11 @@ class TelegramAuthView(View):
         login(request, user)
 
         return JsonResponse({"ok": True, "user": user.username})
+
+
+class MainPageView(LoginRequiredMixin, View):
+    template_name = "main.html"
+    login_url = reverse_lazy("bot:auth")
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        return render(request, self.template_name)

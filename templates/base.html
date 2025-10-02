@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#ffffff" />
+  <title></title>
+  <link rel="stylesheet" href="{% static 'css/dist.css' %}" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="{% static 'js/telegram.js' %}"></script>
+  <script>
+    let tg = window.Telegram.WebApp
+    let csrf_token = '{{csrf_token}}'
+  </script>
+</head>
+
+<body class="text-gray-900 font-sans bg-white dark:bg-black">
+  {% block header %}
+  <div
+    class="flex items-center justify-between bg-white bg-opacity-80 backdrop-blur-md px-6 py-3 shadow-lg max-w-md mx-auto transition-all duration-300 hover:shadow-xl hover:bg-opacity-90 dark:bg-zinc-900">
+    <a href="{% url 'bot:main' %}"
+      class="text-gray-600 hover:text-gray-800 mx-2 transition-all duration-200 ease-in-out rounded-full p-1">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6 text-gray-700 dark:text-gray-200 mx-auto">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+      </svg>
+    </a>
+    <a id="profile-link" href="#">
+      <img class="w-10 h-10 rounded-full" src="{{ user.photo_url|default:'#' }}" alt="{{ user.username }}">
+    </a>
+  </div>
+  {% endblock %}
+
+  <main class="min-h-screen flex flex-col p-4">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      setTheme(tg)
+      tg.onEvent("themeChanged", () => setTheme(tg));
+    })
+    tg.ready();
+    tg.expand();
+  </script>
+</body>
+
+</html>

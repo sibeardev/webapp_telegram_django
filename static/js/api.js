@@ -1,20 +1,6 @@
-function checkTelegramWebApp(tg) {
-  if (typeof tg === "undefined") {
-    console.error("Not running inside Telegram WebApp");
-    return false;
-  }
-
-  if (!tg.initData || tg.initData.length === 0) {
-    console.error("Telegram WebApp initData is missing");
-    return false;
-  }
-
-  return true;
-}
-
-async function authWithTelegram(url, tg, csrfToken) {
+async function authWithTelegram(authUrl, tg, csrfToken, mainUrl) {
   try {
-    let response = await fetch(url, {
+    let response = await fetch(authUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +14,7 @@ async function authWithTelegram(url, tg, csrfToken) {
 
     let result = await response.json();
     if (result.ok) {
-      window.location.href = "/";
+      window.location.href = mainUrl;
     } else {
       tg.showAlert(`Authorization failed: ${result.error}`);
       tg.close();
