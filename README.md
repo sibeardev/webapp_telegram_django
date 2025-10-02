@@ -10,6 +10,7 @@ This is a minimal skeleton project for a Telegram WebApp integrated with Django.
 - Django Backend: Utilizes Django framework for building the web application backend.
 - Python Telegram Bot: Integrates Python Telegram Bot library for interacting with the Telegram API.
 - Uses PostgreSQL as the database backend for storing bot data.
+- Uses Django Daisy for the admin interface, providing a modern and customizable UI
 - Theme-aware colors using Telegram's CSS variables.
 - Basic main page structure with a section for content.
 - Ready for expansion with API requests and additional WebApp functionality.
